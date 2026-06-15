@@ -6,6 +6,7 @@ const {
   SYSTEM_PROMPT,
   buildMessages,
   buildActionMessages,
+  buildProjectContext,
   ACTIONS,
 } = require('../electron/prompt-engine');
 
@@ -53,4 +54,36 @@ test('every advertised action has a directive', () => {
   for (const key of Object.keys(ACTIONS)) {
     assert.ok(ACTIONS[key].length > 0, `action ${key} has directive`);
   }
+});
+
+test('buildProjectContext includes name, systems, rules, restrictions, pinned files', () => {
+  const ctx = buildProjectContext(
+    {
+      name: 'RAJIS',
+      techStack: ['React', 'Three.js', 'Firebase'],
+      memory: 'browser 3D missile game',
+      importantSystems: 'Firebase saves\nLocker cosmetics',
+      rules: 'Do not break Firebase saving.',
+      restrictions: 'Do not rewrite the whole app.',
+    },
+    [{ path: 'src/firebase.js', content: 'export const db = {}', truncated: false }]
+  );
+  assert.match(ctx, /Project: RAJIS/);
+  assert.match(ctx, /Three\.js/);
+  assert.match(ctx, /Firebase saves/);
+  assert.match(ctx, /Do not break Firebase saving/);
+  assert.match(ctx, /Do not rewrite the whole app/);
+  assert.match(ctx, /src\/firebase\.js/);
+  assert.match(ctx, /export const db/);
+});
+
+test('buildMessages with projectContext requests project-aware structure', () => {
+  const msgs = buildMessages({
+    input: 'improve battle pass',
+    promptType: 'Redesign UI',
+    targetAgent: 'Claude Code',
+    projectContext: 'Project: RAJIS',
+  });
+  assert.match(msgs[1].content, /Project: RAJIS/);
+  assert.match(msgs[1].content, /Update \[PROJECT NAME\]/);
 });

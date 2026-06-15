@@ -92,9 +92,21 @@ function buildMessages({ input, promptType, targetAgent, clarify = false, projec
   lines.push((input || '').trim());
   lines.push('');
 
+  const hasProject = Boolean(projectContext && projectContext.trim());
+
   if (clarify) {
     lines.push(
       'Before writing the prompt, ask up to 3 short clarifying questions that would most improve the result. Output ONLY the numbered questions and nothing else.'
+    );
+  } else if (hasProject) {
+    lines.push(
+      'Make reasonable assumptions where details are missing. Output ONLY the finished, copy-paste-ready prompt for the target agent. Use this structure with clear headings:'
+    );
+    lines.push(
+      'Update [PROJECT NAME]. / Project context / Task / Do not break / Current problems / Required changes / Implementation notes / Final requirements / Test cases (when useful).'
+    );
+    lines.push(
+      'Use the real project name and reference the listed important systems and files. Do not invent details that contradict the project context.'
     );
   } else {
     lines.push(
@@ -130,6 +142,64 @@ function buildActionMessages({ currentPrompt, action } = {}) {
   ];
 }
 
+/**
+ * Assemble a compact project-context string for project-aware prompts.
+ * @param {object} project full project record (name, memory, techStack, rules, ...)
+ * @param {Array<{path:string, content?:string, truncated?:boolean}>} [files] selected files
+ */
+function buildProjectContext(project = {}, files = []) {
+  const out = [];
+  out.push(`Project: ${project.name || 'Untitled Project'}`);
+  if (project.description) out.push(`Description: ${project.description}`);
+
+  const stack = Array.isArray(project.techStack) ? project.techStack : [];
+  if (project.framework || stack.length) {
+    out.push(`Stack: ${[project.framework, ...stack].filter(Boolean).join(', ')}`);
+  }
+  if (project.memory && project.memory.trim()) {
+    out.push('');
+    out.push('Project memory:');
+    out.push(project.memory.trim());
+  }
+  if (project.importantSystems && project.importantSystems.trim()) {
+    out.push('');
+    out.push('Important systems (must keep working):');
+    out.push(project.importantSystems.trim());
+  }
+  if (project.rules && project.rules.trim()) {
+    out.push('');
+    out.push('Rules the prompt must follow:');
+    out.push(project.rules.trim());
+  }
+  if (project.restrictions && project.restrictions.trim()) {
+    out.push('');
+    out.push('Restrictions (the agent must avoid):');
+    out.push(project.restrictions.trim());
+  }
+
+  const list = Array.isArray(files) ? files.filter((f) => f && f.path) : [];
+  if (list.length) {
+    out.push('');
+    out.push('Pay special attention to these files:');
+    for (const f of list) out.push(`- ${f.path}`);
+
+    const withContent = list.filter((f) => f.content && f.content.trim());
+    if (withContent.length) {
+      out.push('');
+      out.push('Relevant file contents:');
+      for (const f of withContent) {
+        out.push('');
+        out.push(`File: ${f.path}${f.truncated ? ' (truncated)' : ''}`);
+        out.push('```');
+        out.push(f.content.trim());
+        out.push('```');
+      }
+    }
+  }
+
+  return out.join('\n');
+}
+
 module.exports = {
   SYSTEM_PROMPT,
   PROMPT_TYPES,
@@ -137,4 +207,5 @@ module.exports = {
   ACTIONS,
   buildMessages,
   buildActionMessages,
+  buildProjectContext,
 };

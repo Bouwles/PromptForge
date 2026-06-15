@@ -9,8 +9,9 @@ Everything runs locally. No login, no cloud, no code leaves your machine.
 
 ## Status
 
-**Phase 1 (MVP) — complete and runnable.**
+**Phases 1–3 complete and runnable.**
 
+Core (Phase 1):
 - Electron desktop app (Windows `.exe` + Mac `.dmg` targets)
 - Connects to local Ollama; pick model, set endpoint + temperature, test connection
 - One-off prompt generator with prompt types and target agents
@@ -21,9 +22,17 @@ Everything runs locally. No login, no cloud, no code leaves your machine.
 - Copy + save prompts (SQLite via WASM — no native build needed)
 - Dark, 3-pane, coding-tool UI
 
-Phases 2–3 (projects, folder scanner, project memory, file-picker context, prompt
-history) are designed but not yet built. See `docs/superpowers/specs/` and
-`docs/superpowers/plans/`.
+Projects (Phase 2):
+- Create / edit / delete projects with project cards
+- Connect a local folder; scanner detects framework, language, package manager,
+  dependencies, components, routes, db/data files, tests; renders a clean tree
+- Editable project memory, rules, restrictions, important systems
+- Project-aware prompts that include stack, memory, "do not break", and selected files
+
+Context & history (Phase 3):
+- File picker: tree with checkboxes + ★ pinning; small files inlined, large ones truncated
+- Prompt history: search, copy, edit, duplicate, delete, favorite
+- Home recents (recent projects + prompts)
 
 ## Requirements
 

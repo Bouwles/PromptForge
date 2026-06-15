@@ -2,8 +2,35 @@ import { create } from 'zustand';
 import * as api from './api.js';
 
 export const useStore = create((set, get) => ({
-  view: 'home', // home | oneoff | settings
+  view: 'home', // home | oneoff | projects | project | history | settings
   setView: (view) => set({ view }),
+
+  // Projects
+  projects: [],
+  currentProject: null,
+
+  async loadProjects() {
+    if (!api.isElectron) return;
+    const projects = await api.listProjects();
+    set({ projects });
+  },
+
+  async openProject(id) {
+    if (!api.isElectron) return;
+    const currentProject = await api.getProject(id);
+    set({ currentProject, view: 'project' });
+  },
+
+  async refreshCurrentProject() {
+    const cur = get().currentProject;
+    if (!cur || !api.isElectron) return;
+    const currentProject = await api.getProject(cur.id);
+    set({ currentProject });
+  },
+
+  closeProject() {
+    set({ currentProject: null, view: 'projects' });
+  },
 
   settings: {
     endpoint: 'http://localhost:11434',

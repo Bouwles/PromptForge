@@ -412,3 +412,220 @@ input[type='range'] {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ---------- Project cards ---------- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+}
+.card:hover {
+  border-color: var(--accent-dim);
+}
+.card .name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.card .path {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  word-break: break-all;
+  margin-bottom: 10px;
+}
+.card .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.chip {
+  font-size: 11px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-2);
+  color: var(--text-dim);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+.chip.accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-dim);
+  color: #cfe0ff;
+}
+.card .foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* ---------- File tree ---------- */
+.filetree {
+  font-size: 12px;
+  font-family: var(--mono);
+  max-height: 360px;
+  overflow: auto;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  padding: 6px 0;
+  background: var(--bg);
+}
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.tree-row.dir {
+  cursor: pointer;
+  color: var(--text);
+}
+.tree-row.dir:hover {
+  background: var(--panel);
+}
+.tree-row.file:hover {
+  background: var(--panel);
+}
+.tree-row .tw {
+  width: 12px;
+  color: var(--text-faint);
+}
+.tree-row .tname {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.tree-row.file .tname {
+  color: var(--text-dim);
+}
+.tree-row input[type='checkbox'] {
+  width: auto;
+  accent-color: var(--accent);
+  margin: 0;
+}
+.pin {
+  color: var(--border-2);
+  cursor: pointer;
+  font-size: 12px;
+}
+.pin:hover {
+  color: var(--text-dim);
+}
+.pin.on {
+  color: var(--warn);
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  padding: 7px 11px;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- Two-column workspace ---------- */
+.split {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.split .col-files {
+  min-width: 0;
+}
+
+/* ---------- List rows (history) ---------- */
+.list-row {
+  background: var(--panel);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.list-row .lr-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.list-row .lr-title {
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.list-row .lr-prev {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  max-height: 56px;
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+.star-btn {
+  cursor: pointer;
+  color: var(--border-2);
+  font-size: 14px;
+}
+.star-btn.on {
+  color: var(--warn);
+}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  width: 560px;
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow: auto;
+  padding: 20px 22px;
+}
+.modal h2 {
+  margin: 0 0 14px;
+  font-size: 16px;
+}
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hr {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}

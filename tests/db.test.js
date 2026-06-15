@@ -51,3 +51,60 @@ test('deletePrompt removes the row', () => {
   const all = db.listPrompts();
   assert.ok(!all.find((p) => p.id === saved.id));
 });
+
+test('createProject + getProject round-trips JSON fields', () => {
+  const p = db.createProject({
+    name: 'RAJIS',
+    techStack: ['React', 'Three.js'],
+    rules: 'do not break saves',
+    importantSystems: 'firebase',
+  });
+  assert.ok(p.id);
+  const got = db.getProject(p.id);
+  assert.strictEqual(got.name, 'RAJIS');
+  assert.deepStrictEqual(got.techStack, ['React', 'Three.js']);
+  assert.strictEqual(got.promptCount, 0);
+  assert.deepStrictEqual(got.pinnedFiles, []);
+});
+
+test('updateProject merges patch and bumps updatedAt', () => {
+  const p = db.createProject({ name: 'X' });
+  const upd = db.updateProject(p.id, { memory: 'mem', techStack: ['Vue'] });
+  assert.strictEqual(upd.memory, 'mem');
+  assert.deepStrictEqual(upd.techStack, ['Vue']);
+  assert.ok(upd.updatedAt >= p.updatedAt);
+});
+
+test('project prompts count and cascade delete', () => {
+  const p = db.createProject({ name: 'CascadeProj' });
+  db.savePrompt({ projectId: p.id, promptText: 'a' });
+  db.savePrompt({ projectId: p.id, promptText: 'b' });
+  assert.strictEqual(db.getProject(p.id).promptCount, 2);
+  db.deleteProject(p.id);
+  assert.strictEqual(db.getProject(p.id), null);
+  assert.strictEqual(db.listPrompts({ projectId: p.id }).length, 0);
+});
+
+test('setPinnedFiles replaces the pinned set', () => {
+  const p = db.createProject({ name: 'Pin' });
+  db.setPinnedFiles(p.id, ['a.js', 'b.js']);
+  assert.deepStrictEqual(db.listPinnedFiles(p.id), ['a.js', 'b.js']);
+  db.setPinnedFiles(p.id, ['c.js']);
+  assert.deepStrictEqual(db.listPinnedFiles(p.id), ['c.js']);
+});
+
+test('toggleFavorite and duplicatePrompt', () => {
+  const s = db.savePrompt({ promptText: 'orig', title: 'Orig' });
+  const fav = db.toggleFavorite(s.id);
+  assert.strictEqual(fav.favorite, true);
+  const dup = db.duplicatePrompt(s.id);
+  assert.match(dup.title, /\(copy\)/);
+  assert.strictEqual(dup.promptText, 'orig');
+});
+
+test('searchPrompts filters by query', () => {
+  db.savePrompt({ promptText: 'unicorn rainbow', title: 'magic' });
+  const hits = db.searchPrompts({ query: 'unicorn' });
+  assert.ok(hits.length >= 1);
+  assert.ok(hits.every((p) => /unicorn/i.test(p.promptText) || /unicorn/i.test(p.title)));
+});

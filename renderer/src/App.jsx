@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
 import { useStore } from './store.js';
 import Sidebar from './components/Sidebar.jsx';
+import ProjectContextPanel from './components/ProjectContextPanel.jsx';
 import Home from './screens/Home.jsx';
 import OneOff from './screens/OneOff.jsx';
+import Projects from './screens/Projects.jsx';
+import ProjectWorkspace from './screens/ProjectWorkspace.jsx';
+import History from './screens/History.jsx';
 import Settings from './screens/Settings.jsx';
 
 export default function App() {
@@ -11,13 +15,15 @@ export default function App() {
   const settings = useStore((s) => s.settings);
   const loadSettings = useStore((s) => s.loadSettings);
   const refreshModels = useStore((s) => s.refreshModels);
+  const loadProjects = useStore((s) => s.loadProjects);
 
   useEffect(() => {
     (async () => {
       await loadSettings();
+      await loadProjects();
       await refreshModels();
     })();
-  }, [loadSettings, refreshModels]);
+  }, [loadSettings, refreshModels, loadProjects]);
 
   return (
     <div className="app">
@@ -27,7 +33,9 @@ export default function App() {
         </span>
         <span className="spacer" />
         <span className="conn">
-          <span className={`dot ${connection.state === 'ok' ? 'ok' : connection.state === 'down' ? 'bad' : ''}`} />
+          <span
+            className={`dot ${connection.state === 'ok' ? 'ok' : connection.state === 'down' ? 'bad' : ''}`}
+          />
           {connection.state === 'ok'
             ? `Ollama · ${settings.model || 'no model'}`
             : connection.state === 'down'
@@ -41,6 +49,9 @@ export default function App() {
       <main className="main">
         {view === 'home' && <Home />}
         {view === 'oneoff' && <OneOff />}
+        {view === 'projects' && <Projects />}
+        {view === 'project' && <ProjectWorkspace />}
+        {view === 'history' && <History />}
         {view === 'settings' && <Settings />}
       </main>
 
@@ -52,7 +63,9 @@ export default function App() {
 function ContextPanel({ view }) {
   return (
     <aside className="context">
-      {view === 'oneoff' ? <OneOffContext /> : <DefaultContext />}
+      {view === 'oneoff' && <OneOffContext />}
+      {view === 'project' && <ProjectContextPanel />}
+      {view !== 'oneoff' && view !== 'project' && <DefaultContext view={view} />}
     </aside>
   );
 }
@@ -83,14 +96,20 @@ function OneOffContext() {
   );
 }
 
-function DefaultContext() {
+function DefaultContext({ view }) {
   return (
     <div className="block">
       <div className="section-title">Context</div>
-      <p>
-        Project files, rules, and pinned context appear here when you open a project (Phase 2). For
-        one-off prompts, switch to the One-Off Prompt screen.
-      </p>
+      {view === 'projects' && (
+        <p>
+          Create a project, connect its local folder, and PromptForge will scan it and write prompts
+          that know your stack, important systems, and files.
+        </p>
+      )}
+      {view === 'history' && <p>Every saved prompt lives here — search, copy, duplicate, or favorite.</p>}
+      {(view === 'home' || view === 'settings') && (
+        <p>Open a project to see its files, rules, and pinned context here.</p>
+      )}
     </div>
   );
 }
