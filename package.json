@@ -14,12 +14,14 @@
     "dist": "npm run build && electron-builder",
     "dist:win": "npm run build && electron-builder --win",
     "dist:mac": "npm run build && electron-builder --mac",
+    "pack:win": "npm run build && electron-packager . PromptForge --platform=win32 --arch=x64 --out=release --overwrite --no-asar --ignore=\"/release\" --ignore=\"/docs\" --ignore=\"/tests\" --ignore=\"/scripts\"",
     "test": "node --test \"tests/*.test.js\""
   },
   "dependencies": {
     "node-sqlite3-wasm": "^0.8.34"
   },
   "devDependencies": {
+    "@electron/packager": "^20.0.1",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
@@ -37,6 +39,9 @@
     "files": [
       "dist/**",
       "electron/**",
+      "node_modules/node-sqlite3-wasm/**"
+    ],
+    "asarUnpack": [
       "node_modules/node-sqlite3-wasm/**"
     ],
     "directories": {
