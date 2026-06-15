@@ -1,0 +1,57 @@
+{
+  "name": "promptforge",
+  "version": "0.1.0",
+  "description": "Local Ollama-powered prompt engineering assistant for coding agents",
+  "author": "Paul Nercessian",
+  "license": "MIT",
+  "main": "electron/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev:vite": "vite",
+    "dev:electron": "wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
+    "dev": "concurrently -k -n VITE,ELECTRON -c cyan,magenta \"npm:dev:vite\" \"npm:dev:electron\"",
+    "build": "vite build",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "test": "node --test \"tests/*.test.js\""
+  },
+  "dependencies": {
+    "node-sqlite3-wasm": "^0.8.34"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^6.0.7",
+    "wait-on": "^8.0.2",
+    "zustand": "^5.0.3"
+  },
+  "build": {
+    "appId": "com.promptforge.app",
+    "productName": "PromptForge",
+    "files": [
+      "dist/**",
+      "electron/**",
+      "node_modules/node-sqlite3-wasm/**"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.developer-tools"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
