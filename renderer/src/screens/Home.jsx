@@ -11,7 +11,6 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      if (!api.isElectron) return;
       const rows = await api.listPrompts({});
       setRecentPrompts(rows.slice(0, 5));
     })();
@@ -23,8 +22,9 @@ export default function Home() {
     <div style={{ maxWidth: 820 }}>
       <h1 className="h1">PromptForge</h1>
       <p className="sub">
-        A local prompt engineer for coding agents. Turn rough ideas into clean, structured prompts
-        for Claude Code, Cursor, Windsurf, and more — powered by your local Ollama.
+        A prompt engineer for coding agents. Turn rough ideas into clean, structured prompts
+        for Claude Code, Cursor, Windsurf, and more — powered by{' '}
+        {api.mode === 'electron' ? 'your local Ollama' : 'a hosted AI backend'}.
       </p>
 
       <div className="btn-group" style={{ marginBottom: 22 }}>
@@ -40,13 +40,17 @@ export default function Home() {
       </div>
 
       <div className="banner" style={{ marginBottom: 24 }}>
-        {connection.state === 'ok' && <>Ollama connected · {connection.count} model(s) available.</>}
+        {connection.state === 'ok' && (
+          <>{api.backendLabel} connected · {connection.count} model(s) available.</>
+        )}
         {connection.state === 'down' && (
           <span style={{ color: 'var(--bad)' }}>
-            Ollama is not running. Start Ollama and try again.
+            {api.mode === 'electron'
+              ? 'Ollama is not running. Start Ollama and try again.'
+              : `${api.backendLabel} offline. ${connection.error || 'Check Backend URL in Settings.'}`}
           </span>
         )}
-        {connection.state === 'unknown' && <>Checking Ollama connection…</>}
+        {connection.state === 'unknown' && <>Checking {api.backendLabel} connection…</>}
       </div>
 
       <div className="split" style={{ gridTemplateColumns: '1fr 1fr' }}>
