@@ -1,50 +1,50 @@
-// Thin wrapper over the preload-exposed window.api with a guard for non-Electron
-// dev (e.g. opening the Vite URL directly in a browser).
+// Unified API adapter. In Electron it delegates to the preload-exposed window.api
+// (full local power). In a plain browser (e.g. GitHub Pages) it uses the web
+// implementation: IndexedDB storage + the OpenRouter-via-Worker backend + the
+// File System Access scanner. The store and screens are identical in both.
 
-const api = typeof window !== 'undefined' ? window.api : undefined;
+import { createWebApi } from './web/index.js';
 
-function ensure() {
-  if (!api) {
-    throw new Error('PromptForge bridge unavailable. Run the app via "npm run dev" (Electron).');
-  }
-  return api;
-}
+const electronApi = typeof window !== 'undefined' ? window.api : undefined;
+const impl = electronApi || createWebApi();
 
-export const isElectron = Boolean(api);
+export const mode = electronApi ? 'electron' : 'web';
+export const isElectron = Boolean(electronApi);
+export const ready = true; // a backend is always present now (electron or web)
+export const backendLabel = electronApi ? 'Ollama' : 'AI backend';
 
-// Ollama
-export const listModels = () => ensure().listModels();
-export const testConnection = () => ensure().testConnection();
+// Models / connection
+export const listModels = () => impl.listModels();
+export const testConnection = () => impl.testConnection();
 
 // Settings
-export const getSettings = () => ensure().getSettings();
-export const setSetting = (key, value) => ensure().setSetting(key, value);
+export const getSettings = () => impl.getSettings();
+export const setSetting = (key, value) => impl.setSetting(key, value);
 
 // Prompts / history
-export const savePrompt = (row) => ensure().savePrompt(row);
-export const listPrompts = (filter) => ensure().listPrompts(filter);
-export const getPrompt = (id) => ensure().getPrompt(id);
-export const updatePrompt = (id, patch) => ensure().updatePrompt(id, patch);
-export const deletePrompt = (id) => ensure().deletePrompt(id);
-export const toggleFavorite = (id) => ensure().toggleFavorite(id);
-export const duplicatePrompt = (id) => ensure().duplicatePrompt(id);
-export const searchPrompts = (args) => ensure().searchPrompts(args);
+export const savePrompt = (row) => impl.savePrompt(row);
+export const listPrompts = (filter) => impl.listPrompts(filter);
+export const getPrompt = (id) => impl.getPrompt(id);
+export const updatePrompt = (id, patch) => impl.updatePrompt(id, patch);
+export const deletePrompt = (id) => impl.deletePrompt(id);
+export const toggleFavorite = (id) => impl.toggleFavorite(id);
+export const duplicatePrompt = (id) => impl.duplicatePrompt(id);
+export const searchPrompts = (args) => impl.searchPrompts(args);
 
 // Projects
-export const createProject = (data) => ensure().createProject(data);
-export const getProject = (id) => ensure().getProject(id);
-export const listProjects = () => ensure().listProjects();
-export const updateProject = (id, patch) => ensure().updateProject(id, patch);
-export const deleteProject = (id) => ensure().deleteProject(id);
-export const listPinnedFiles = (id) => ensure().listPinnedFiles(id);
-export const setPinnedFiles = (id, paths) => ensure().setPinnedFiles(id, paths);
+export const createProject = (data) => impl.createProject(data);
+export const getProject = (id) => impl.getProject(id);
+export const listProjects = () => impl.listProjects();
+export const updateProject = (id, patch) => impl.updateProject(id, patch);
+export const deleteProject = (id) => impl.deleteProject(id);
+export const listPinnedFiles = (id) => impl.listPinnedFiles(id);
+export const setPinnedFiles = (id, paths) => impl.setPinnedFiles(id, paths);
 
 // Filesystem
-export const pickFolder = () => ensure().pickFolder();
-export const scanFolder = (folderPath, ignoredFolders) =>
-  ensure().scanFolder(folderPath, ignoredFolders);
-export const readFile = (fullPath) => ensure().readFile(fullPath);
+export const pickFolder = () => impl.pickFolder();
+export const scanFolder = (folderPath, ignoredFolders) => impl.scanFolder(folderPath, ignoredFolders);
+export const readFile = (fullPath) => impl.readFile(fullPath);
 
 // Generation
-export const generate = (payload, handlers) => ensure().generate(payload, handlers);
-export const generateAction = (payload, handlers) => ensure().generateAction(payload, handlers);
+export const generate = (payload, handlers) => impl.generate(payload, handlers);
+export const generateAction = (payload, handlers) => impl.generateAction(payload, handlers);

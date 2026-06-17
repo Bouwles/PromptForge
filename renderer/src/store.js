@@ -10,20 +10,18 @@ export const useStore = create((set, get) => ({
   currentProject: null,
 
   async loadProjects() {
-    if (!api.isElectron) return;
     const projects = await api.listProjects();
     set({ projects });
   },
 
   async openProject(id) {
-    if (!api.isElectron) return;
     const currentProject = await api.getProject(id);
     set({ currentProject, view: 'project' });
   },
 
   async refreshCurrentProject() {
     const cur = get().currentProject;
-    if (!cur || !api.isElectron) return;
+    if (!cur) return;
     const currentProject = await api.getProject(cur.id);
     set({ currentProject });
   },
@@ -55,7 +53,6 @@ export const useStore = create((set, get) => ({
   setOneOff: (patch) => set((s) => ({ oneOff: { ...s.oneOff, ...patch } })),
 
   async loadSettings() {
-    if (!api.isElectron) return;
     const settings = await api.getSettings();
     set((s) => ({
       settings,
@@ -65,16 +62,11 @@ export const useStore = create((set, get) => ({
 
   async saveSetting(key, value) {
     set((s) => ({ settings: { ...s.settings, [key]: value } }));
-    if (!api.isElectron) return;
     const settings = await api.setSetting(key, value);
     set({ settings });
   },
 
   async refreshModels() {
-    if (!api.isElectron) {
-      set({ connection: { state: 'down', error: 'Not running in Electron.', count: 0 } });
-      return;
-    }
     const res = await api.listModels();
     if (res.ok) {
       set({ models: res.models, connection: { state: 'ok', error: '', count: res.models.length } });

@@ -28,19 +28,31 @@ export default function Settings() {
     }
   }
 
+  const web = api.mode === 'web';
+
   return (
     <div style={{ maxWidth: 560 }}>
       <h1 className="h1">Settings</h1>
-      <p className="sub">Connect to your local Ollama instance. Everything stays on this machine.</p>
+      <p className="sub">
+        {web
+          ? 'Connect to your PromptForge backend (Cloudflare Worker). Prompts and history stay in this browser.'
+          : 'Connect to your local Ollama instance. Everything stays on this machine.'}
+      </p>
 
       <div className="field">
-        <label>Ollama endpoint</label>
+        <label>{web ? 'Backend URL' : 'Ollama endpoint'}</label>
         <input
           type="text"
           value={settings.endpoint}
           onChange={(e) => saveSetting('endpoint', e.target.value)}
-          placeholder="http://localhost:11434"
+          placeholder={web ? 'https://promptforge.<you>.workers.dev' : 'http://localhost:11434'}
         />
+        {web && (
+          <p className="muted" style={{ marginTop: 6 }}>
+            Paste the URL of your deployed Worker. It proxies OpenRouter so your API key never reaches
+            the browser.
+          </p>
+        )}
       </div>
 
       <div className="field">

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useStore } from './store.js';
+import { backendLabel, mode } from './api.js';
 import Sidebar from './components/Sidebar.jsx';
 import ProjectContextPanel from './components/ProjectContextPanel.jsx';
 import Home from './screens/Home.jsx';
@@ -37,9 +38,9 @@ export default function App() {
             className={`dot ${connection.state === 'ok' ? 'ok' : connection.state === 'down' ? 'bad' : ''}`}
           />
           {connection.state === 'ok'
-            ? `Ollama · ${settings.model || 'no model'}`
+            ? `${backendLabel} · ${settings.model || 'no model'}`
             : connection.state === 'down'
-              ? 'Ollama offline'
+              ? `${backendLabel} offline`
               : 'connecting…'}
         </span>
       </header>
@@ -90,7 +91,14 @@ function OneOffContext() {
       </div>
       <div className="block">
         <div className="section-title">Privacy</div>
-        <p>Your input never leaves this machine. Generation runs on local Ollama.</p>
+        {mode === 'electron' ? (
+          <p>Your input never leaves this machine. Generation runs on local Ollama.</p>
+        ) : (
+          <p>
+            Prompts and history are stored only in this browser. Your request text is sent to your
+            configured backend for generation.
+          </p>
+        )}
       </div>
     </>
   );

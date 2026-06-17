@@ -83,6 +83,49 @@ Electron, three layers with a strict privilege boundary:
 
 Data is stored in your OS app-data folder as `promptforge.db`.
 
+The renderer is environment-agnostic: `renderer/src/api.js` delegates to Electron's
+`window.api` when present, and otherwise to a browser implementation in
+`renderer/src/web/` (IndexedDB storage, File System Access folder scanning, and an
+OpenRouter-via-Worker backend). The same React app powers both the desktop and web builds.
+
+## Online deployment (GitHub Pages + Cloudflare Worker)
+
+GitHub Pages is static-only and can't run Ollama, so the web build talks to a tiny
+**Cloudflare Worker** that proxies **OpenRouter** (the API key stays in the Worker, never
+in the browser). Prompts, projects, and history live in the browser's IndexedDB; folder
+scanning uses the File System Access API (Chromium-based browsers).
+
+**1. Deploy the backend** (see [`worker/README.md`](worker/README.md)):
+
+```bash
+cd worker
+npm install
+npx wrangler login
+npx wrangler secret put OPENROUTER_API_KEY
+npm run deploy            # prints https://promptforge.<you>.workers.dev
+```
+
+Lock it to your site afterward by setting `ALLOWED_ORIGINS` in `worker/wrangler.toml`.
+The endpoint is public — anyone who finds it can spend your OpenRouter credit, so add
+Cloudflare rate limiting and keep `ALLOWED_ORIGINS` tight.
+
+**2. Deploy the frontend.** In the repo: **Settings → Pages → Build and deployment →
+Source: GitHub Actions**. Pushing to `main` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml),
+which builds the web bundle and publishes it to `https://<user>.github.io/PromptForge/`.
+
+Set the repo variable `VITE_BACKEND_URL` (Settings → Secrets and variables → Actions →
+Variables) to your Worker URL to bake it in, or just paste it in the app under
+**Settings → Backend URL**.
+
+Build it locally with:
+
+```bash
+npm run build:web        # outputs static site to dist/renderer
+```
+
+> Note: the web build's base path is `/PromptForge/` (the repo name). If you rename the
+> repo or use a user/org Pages site, set `VITE_BASE` accordingly.
+
 ## License
 
 MIT

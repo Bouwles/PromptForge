@@ -1,0 +1,14 @@
+{
+  "name": "promptforge-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker proxy in front of OpenRouter for the PromptForge web build",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
