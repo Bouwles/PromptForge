@@ -5,7 +5,8 @@ compatibility_date = "2024-11-01"
 # Set after you know your GitHub Pages origin to lock the API to your site.
 # Comma-separated. Leave as "*" to allow any origin (anyone can use your key).
 [vars]
-ALLOWED_ORIGINS = "*"
+# Locked to the GitHub Pages site (+ localhost for dev). Add origins as needed.
+ALLOWED_ORIGINS = "https://bouwles.github.io,http://localhost:5173"
 APP_TITLE = "PromptForge"
 # Optional: curate the model dropdown instead of listing all of OpenRouter.
 # ALLOWED_MODELS = "anthropic/claude-3.5-sonnet,openai/gpt-4o-mini,meta-llama/llama-3.1-70b-instruct"

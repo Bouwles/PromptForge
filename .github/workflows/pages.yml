@@ -35,9 +35,9 @@ jobs:
       - name: Build web (Vite)
         run: npm run build:web
         env:
-          # Set repo variable VITE_BACKEND_URL to your Worker URL to bake it in.
-          # If unset, paste the URL in the app under Settings -> Backend URL.
-          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+          # Deployed Worker URL baked into the build. Override anytime by setting
+          # the repo variable VITE_BACKEND_URL, or in-app under Settings -> Backend URL.
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL || 'https://promptforge.paulnercessian.workers.dev' }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
