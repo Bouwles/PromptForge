@@ -34,24 +34,35 @@ export default function Settings() {
     <div style={{ maxWidth: 560 }}>
       <h1 className="h1">Settings</h1>
       <p className="sub">
-        {web
-          ? 'Connect to your PromptForge backend (Cloudflare Worker). Prompts and history stay in this browser.'
-          : 'Connect to your local Ollama instance. Everything stays on this machine.'}
+        Connect to your local Ollama. Everything stays on your machine — prompts and history live in
+        this browser, generation runs on your own Ollama.
       </p>
 
       <div className="field">
-        <label>{web ? 'Backend URL' : 'Ollama endpoint'}</label>
+        <label>Ollama endpoint</label>
         <input
           type="text"
           value={settings.endpoint}
           onChange={(e) => saveSetting('endpoint', e.target.value)}
-          placeholder={web ? 'https://promptforge.<you>.workers.dev' : 'http://localhost:11434'}
+          placeholder="http://localhost:11434"
         />
         {web && (
-          <p className="muted" style={{ marginTop: 6 }}>
-            Paste the URL of your deployed Worker. It proxies OpenRouter so your API key never reaches
-            the browser.
-          </p>
+          <div className="muted" style={{ marginTop: 6 }}>
+            <p style={{ margin: '0 0 4px' }}>
+              This site (HTTPS) must be allowed to reach your local Ollama. One-time setup:
+            </p>
+            <ol style={{ margin: 0, paddingLeft: 18 }}>
+              <li>Install Ollama + pull a model: <code>ollama pull llama3.2</code></li>
+              <li>
+                Allow this origin, then restart Ollama:
+                <br />
+                <code>setx OLLAMA_ORIGINS "https://bouwles.github.io"</code> (Windows), or
+                <br />
+                <code>OLLAMA_ORIGINS="https://bouwles.github.io" ollama serve</code> (Mac/Linux)
+              </li>
+              <li>Use Chrome or Edge (Firefox/Safari block HTTPS→localhost).</li>
+            </ol>
+          </div>
         )}
       </div>
 

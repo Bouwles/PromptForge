@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useStore } from './store.js';
-import { backendLabel, mode } from './api.js';
+import { backendLabel } from './api.js';
 import Sidebar from './components/Sidebar.jsx';
 import ProjectContextPanel from './components/ProjectContextPanel.jsx';
 import Home from './screens/Home.jsx';
@@ -91,14 +91,7 @@ function OneOffContext() {
       </div>
       <div className="block">
         <div className="section-title">Privacy</div>
-        {mode === 'electron' ? (
-          <p>Your input never leaves this machine. Generation runs on local Ollama.</p>
-        ) : (
-          <p>
-            Prompts and history are stored only in this browser. Your request text is sent to your
-            configured backend for generation.
-          </p>
-        )}
+        <p>Your input never leaves this machine. Generation runs on your local Ollama.</p>
       </div>
     </>
   );

@@ -23,8 +23,7 @@ export default function Home() {
       <h1 className="h1">PromptForge</h1>
       <p className="sub">
         A prompt engineer for coding agents. Turn rough ideas into clean, structured prompts
-        for Claude Code, Cursor, Windsurf, and more — powered by{' '}
-        {api.mode === 'electron' ? 'your local Ollama' : 'a hosted AI backend'}.
+        for Claude Code, Cursor, Windsurf, and more — powered by your local Ollama.
       </p>
 
       <div className="btn-group" style={{ marginBottom: 22 }}>
@@ -47,7 +46,7 @@ export default function Home() {
           <span style={{ color: 'var(--bad)' }}>
             {api.mode === 'electron'
               ? 'Ollama is not running. Start Ollama and try again.'
-              : `${api.backendLabel} offline. ${connection.error || 'Check Backend URL in Settings.'}`}
+              : connection.error || 'Cannot reach Ollama. See Settings.'}
           </span>
         )}
         {connection.state === 'unknown' && <>Checking {api.backendLabel} connection…</>}

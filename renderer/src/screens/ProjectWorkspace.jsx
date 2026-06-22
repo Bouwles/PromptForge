@@ -191,7 +191,7 @@ export default function ProjectWorkspace() {
         <div className="banner bad">
           {api.mode === 'electron'
             ? 'Ollama is not running. Start Ollama and try again.'
-            : `Backend offline. ${connection.error || 'Set your backend URL in Settings.'}`}
+            : connection.error || 'Cannot reach Ollama. See Settings.'}
         </div>
       )}
       {scanError && <div className="banner bad">{scanError}</div>}

@@ -11,11 +11,8 @@ const STORES = {
   handles: 'handles', // key/value: folderKey -> FileSystemDirectoryHandle
 };
 
-const DEFAULT_BACKEND_URL =
-  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_BACKEND_URL) || '';
-
 const DEFAULT_SETTINGS = {
-  endpoint: DEFAULT_BACKEND_URL, // in web mode, "endpoint" is the backend (Worker) URL
+  endpoint: 'http://localhost:11434', // web mode talks to the visitor's local Ollama
   model: '',
   temperature: 0.4,
   theme: 'dark',
@@ -81,9 +78,6 @@ export async function getSettings() {
       out[k] = vals[i];
     });
   });
-  // ponytail: baked Worker URL always wins on the deployed site, so a stale
-  // saved endpoint (e.g. localhost from dev) can't break a Pages build.
-  if (DEFAULT_BACKEND_URL) out.endpoint = DEFAULT_BACKEND_URL;
   return out;
 }
 

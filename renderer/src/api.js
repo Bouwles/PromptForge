@@ -11,7 +11,7 @@ const impl = electronApi || createWebApi();
 export const mode = electronApi ? 'electron' : 'web';
 export const isElectron = Boolean(electronApi);
 export const ready = true; // a backend is always present now (electron or web)
-export const backendLabel = electronApi ? 'Ollama' : 'AI backend';
+export const backendLabel = 'Ollama'; // both desktop and web talk to local Ollama
 
 // Models / connection
 export const listModels = () => impl.listModels();

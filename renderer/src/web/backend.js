@@ -1,80 +1,59 @@
-// Web backend client. Talks to the PromptForge Cloudflare Worker, which proxies
-// OpenRouter (so the API key never ships to the browser). Mirrors the surface of
-// electron/ollama.js: listModels, testConnection, chatStream.
+// Web backend client — talks directly to the visitor's LOCAL Ollama from the
+// browser (http://localhost:11434). No server, no API key, no cost. Mirrors
+// electron/ollama.js (same /api/tags + /api/chat NDJSON streaming).
+//
+// Requires (visitor side):
+//  - Ollama running locally with at least one model (`ollama pull llama3.2`)
+//  - OLLAMA_ORIGINS set so the browser is allowed cross-origin, e.g.
+//      setx OLLAMA_ORIGINS "https://bouwles.github.io"   (then restart Ollama)
+//  - A Chromium browser (Chrome/Edge); Firefox/Safari block https->http localhost.
 
-const NO_BACKEND =
-  'No backend URL set. Open Settings and paste your PromptForge Worker URL.';
+const OLLAMA_DOWN =
+  'Cannot reach Ollama. Install it, run it, and set OLLAMA_ORIGINS for this site (see Settings).';
 
 function base(url) {
-  return (url || '').replace(/\/+$/, '');
+  return (url || 'http://localhost:11434').replace(/\/+$/, '');
 }
 
-/**
- * @param {string} backendUrl base URL of the deployed Worker
- */
-export function createBackend(backendUrl) {
-  const root = base(backendUrl);
+export function createBackend(endpoint) {
+  const root = base(endpoint);
 
   async function listModels() {
-    if (!root) throw new Error(NO_BACKEND);
     let res;
     try {
-      res = await fetch(`${root}/api/models`);
+      res = await fetch(`${root}/api/tags`);
     } catch {
-      throw new Error('Cannot reach the backend. Check the URL in Settings.');
+      throw new Error(OLLAMA_DOWN);
     }
-    if (!res.ok) throw new Error(`Backend returned HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`Ollama returned HTTP ${res.status}`);
     const data = await res.json();
     const models = Array.isArray(data.models) ? data.models : [];
-    return models.map((m) => ({
-      name: m.name || m.id,
-      label: m.label || m.name || m.id,
-      size: m.size || 0,
-      remote: true,
-    }));
+    return models.map((m) => ({ name: m.name, label: m.name, size: m.size || 0, remote: false }));
   }
 
   async function testConnection() {
     try {
-      const models = await listModels();
-      return { ok: true, models };
+      return { ok: true, models: await listModels() };
     } catch (err) {
-      return { ok: false, error: (err && err.message) || 'Backend unavailable.' };
+      return { ok: false, error: (err && err.message) || OLLAMA_DOWN };
     }
   }
 
-  /**
-   * Stream a chat completion via the Worker. Calls onToken(delta) per chunk.
-   * The Worker forwards OpenRouter's OpenAI-style SSE unchanged.
-   * @returns {Promise<string>} full assembled text
-   */
+  // Stream a chat completion. Calls onToken(delta) per chunk. Returns full text.
   async function chatStream({ model, messages, temperature = 0.4, onToken, signal } = {}) {
-    if (!root) throw new Error(NO_BACKEND);
     let res;
     try {
-      res = await fetch(`${root}/api/generate`, {
+      res = await fetch(`${root}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, messages, temperature }),
+        body: JSON.stringify({ model, messages, stream: true, options: { temperature } }),
         signal,
       });
     } catch {
-      throw new Error('Cannot reach the backend. Check the URL in Settings.');
+      throw new Error(OLLAMA_DOWN);
     }
-    if (!res.ok) {
-      let msg = `Backend returned HTTP ${res.status}`;
-      try {
-        const j = await res.json();
-        if (j && j.error) msg = j.error;
-      } catch {
-        /* non-JSON error body */
-      }
-      throw new Error(msg);
-    }
-    if (!res.body) {
-      const text = await res.text();
-      return consumeSse(text, onToken);
-    }
+    if (!res.ok) throw new Error(`Ollama returned HTTP ${res.status}`);
+    if (!res.body) return consumeNdjson(await res.text(), onToken);
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
@@ -86,42 +65,35 @@ export function createBackend(backendUrl) {
       buffer += decoder.decode(value, { stream: true });
       let nl;
       while ((nl = buffer.indexOf('\n')) >= 0) {
-        const line = buffer.slice(0, nl);
+        const line = buffer.slice(0, nl).trim();
         buffer = buffer.slice(nl + 1);
-        full += emitLine(line, onToken);
+        if (line) full += emitLine(line, onToken);
       }
     }
-    if (buffer) full += emitLine(buffer, onToken);
+    if (buffer.trim()) full += emitLine(buffer.trim(), onToken);
     return full;
   }
 
   return { listModels, testConnection, chatStream };
 }
 
-// Parse one SSE line of the OpenAI/OpenRouter streaming format.
-function emitLine(rawLine, onToken) {
-  const line = rawLine.trim();
-  if (!line) return '';
-  if (line.startsWith(':')) return ''; // SSE comment / keep-alive (e.g. ": OPENROUTER PROCESSING")
-  if (!line.startsWith('data:')) return '';
-  const payload = line.slice(5).trim();
-  if (!payload || payload === '[DONE]') return '';
+function emitLine(line, onToken) {
   let obj;
   try {
-    obj = JSON.parse(payload);
+    obj = JSON.parse(line);
   } catch {
     return '';
   }
-  const delta =
-    obj && obj.choices && obj.choices[0] && obj.choices[0].delta && typeof obj.choices[0].delta.content === 'string'
-      ? obj.choices[0].delta.content
-      : '';
+  const delta = obj && obj.message && typeof obj.message.content === 'string' ? obj.message.content : '';
   if (delta && typeof onToken === 'function') onToken(delta);
   return delta;
 }
 
-function consumeSse(text, onToken) {
+function consumeNdjson(text, onToken) {
   let full = '';
-  for (const line of text.split('\n')) full += emitLine(line, onToken);
+  for (const line of text.split('\n')) {
+    const t = line.trim();
+    if (t) full += emitLine(t, onToken);
+  }
   return full;
 }
