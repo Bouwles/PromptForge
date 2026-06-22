@@ -25,9 +25,7 @@ export function createBackend(backendUrl) {
     }
     if (!res.ok) throw new Error(`Backend returned HTTP ${res.status}`);
     const data = await res.json();
-    const all = Array.isArray(data.models) ? data.models : [];
-    // ponytail: free-only dropdown. Drop the filter to show paid models too.
-    const models = all.filter((m) => (m.name || m.id || '').endsWith(':free'));
+    const models = Array.isArray(data.models) ? data.models : [];
     return models.map((m) => ({
       name: m.name || m.id,
       label: m.label || m.name || m.id,
