@@ -81,6 +81,9 @@ export async function getSettings() {
       out[k] = vals[i];
     });
   });
+  // ponytail: baked Worker URL always wins on the deployed site, so a stale
+  // saved endpoint (e.g. localhost from dev) can't break a Pages build.
+  if (DEFAULT_BACKEND_URL) out.endpoint = DEFAULT_BACKEND_URL;
   return out;
 }
 
