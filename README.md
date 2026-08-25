@@ -55,15 +55,15 @@ Download the latest Windows release zip from GitHub Releases.
 PromptForge is a local desktop app. Install it, start Ollama, pull a model, then open
 Settings and test the connection.
 
-## Build installers locally
+## Build locally
 
 ```bash
-npm run dist:win   # Windows NSIS .exe
-npm run dist:mac   # macOS .dmg
+npm run pack:win   # Windows portable app folder
+npm run dist:mac   # macOS .dmg, run on macOS
 ```
 
-Output lands in `release/`. Because SQLite is a WASM module (not a native binary),
-the same bundle is portable â€” no per-platform native rebuild.
+Output lands in `release/`. The GitHub Release workflow zips the Windows portable
+folder and publishes it as a downloadable release asset.
 
 ## Test
 
