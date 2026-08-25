@@ -71,6 +71,7 @@ const ACTIONS = {
   ui_details: 'Add a detailed UI/UX section to this prompt: layout, spacing, states (loading/empty/error/hover/active), and a final quality bar.',
   do_not_break: 'Add a clear "Do not break" section to this prompt listing existing behavior and systems that must keep working.',
   split: 'Split this into multiple self-contained step-by-step prompts. Number each prompt. Each prompt must restate enough context to stand alone so the coding agent does not lose requirements between steps.',
+  checklist: 'Convert this prompt into a strict implementation checklist. Preserve the original intent, group the work into ordered phases, and make each item independently verifiable.',
   to_claude_code: 'Rewrite this prompt specifically for Claude Code: reference relevant files/dirs, state what to change and what not to break, and give concrete success criteria.',
   to_cursor: 'Rewrite this prompt specifically for Cursor: concise, file-focused, with clear acceptance criteria.',
 };
