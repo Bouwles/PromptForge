@@ -111,6 +111,11 @@ body {
   cursor: pointer;
   user-select: none;
   font-size: 13px;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans);
+  background: transparent;
 }
 .nav-item:hover {
   background: var(--panel);
@@ -126,9 +131,11 @@ body {
   cursor: default;
 }
 .nav-item .ico {
-  width: 16px;
+  width: 32px;
   text-align: center;
   opacity: 0.9;
+  font-size: 10px;
+  color: var(--text-faint);
 }
 .nav-section {
   margin: 14px 8px 4px;
