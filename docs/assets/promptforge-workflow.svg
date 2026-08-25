@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+  <title id="title">PromptForge workflow</title>
+  <desc id="desc">Workflow from messy request to project scan, prompt generation, refinement, and saved history.</desc>
+  <rect width="1280" height="360" fill="#0b0f17"/>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="64" y="70" fill="#f8fafc" font-size="34" font-weight="850">Messy idea to agent-ready prompt</text>
+    <text x="64" y="104" fill="#97a3b6" font-size="16">PromptForge keeps context local, structures the work, and preserves the systems that must not break.</text>
+    <g transform="translate(64 156)">
+      <rect width="200" height="116" rx="12" fill="#111827" stroke="#263650"/>
+      <text x="24" y="40" fill="#7dd3fc" font-size="13" font-weight="800">1. REQUEST</text>
+      <text x="24" y="72" fill="#e6edf6" font-size="15">Paste the rough task,</text>
+      <text x="24" y="94" fill="#e6edf6" font-size="15">bug, or redesign idea.</text>
+    </g>
+    <path d="M282 214h70" stroke="#4f8cff" stroke-width="3"/>
+    <g transform="translate(370 156)">
+      <rect width="200" height="116" rx="12" fill="#111827" stroke="#263650"/>
+      <text x="24" y="40" fill="#7dd3fc" font-size="13" font-weight="800">2. CONTEXT</text>
+      <text x="24" y="72" fill="#e6edf6" font-size="15">Scan files, stack, tests,</text>
+      <text x="24" y="94" fill="#e6edf6" font-size="15">rules, and memory.</text>
+    </g>
+    <path d="M588 214h70" stroke="#4f8cff" stroke-width="3"/>
+    <g transform="translate(676 156)">
+      <rect width="200" height="116" rx="12" fill="#111827" stroke="#263650"/>
+      <text x="24" y="40" fill="#7dd3fc" font-size="13" font-weight="800">3. GENERATE</text>
+      <text x="24" y="72" fill="#e6edf6" font-size="15">Stream a structured</text>
+      <text x="24" y="94" fill="#e6edf6" font-size="15">coding-agent prompt.</text>
+    </g>
+    <path d="M894 214h70" stroke="#4f8cff" stroke-width="3"/>
+    <g transform="translate(982 156)">
+      <rect width="234" height="116" rx="12" fill="#111827" stroke="#263650"/>
+      <text x="24" y="40" fill="#7dd3fc" font-size="13" font-weight="800">4. REFINE + SAVE</text>
+      <text x="24" y="72" fill="#e6edf6" font-size="15">Retarget, add tests, copy,</text>
+      <text x="24" y="94" fill="#e6edf6" font-size="15">favorite, and reuse.</text>
+    </g>
+  </g>
+</svg>
