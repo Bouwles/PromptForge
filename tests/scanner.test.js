@@ -33,6 +33,8 @@ before(() => {
   mk('src/data/weaponCamos.json', '[]');
   mk('src/App.test.jsx', 'test("x", () => {})');
   mk('logo.png', 'binarydata');
+  mk('bun.lock', 'lock');
+  mk('.parcel-cache/bundle.js', 'cached');
   fs.mkdirSync(path.join(root, 'node_modules', 'react'), { recursive: true });
   fs.writeFileSync(path.join(root, 'node_modules', 'react', 'index.js'), 'module.exports={}');
 });
@@ -52,7 +54,9 @@ test('detects framework, language, package manager', () => {
 test('ignores node_modules and media files', () => {
   const r = scanFolder(root);
   assert.ok(!r.files.some((f) => f.includes('node_modules')), 'node_modules excluded');
+  assert.ok(!r.files.some((f) => f.includes('.parcel-cache')), 'parcel cache excluded');
   assert.ok(!r.files.some((f) => f.endsWith('.png')), 'media excluded');
+  assert.ok(!r.files.includes('bun.lock'), 'bun lock excluded');
 });
 
 test('classifies components, db files, data files, tests, entry files', () => {
