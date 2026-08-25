@@ -70,6 +70,7 @@ function TreeNode({ node, depth, selected, onToggleSelect, pinned, onTogglePin, 
         checked={isSel}
         onChange={() => onToggleSelect(node.path)}
         title="Include this file as context"
+        aria-label={`Include ${node.path} as prompt context`}
       />
       <span className="tname" onClick={() => onToggleSelect(node.path)}>
         {node.name}
@@ -78,6 +79,14 @@ function TreeNode({ node, depth, selected, onToggleSelect, pinned, onTogglePin, 
         className={`pin ${isPinned ? 'on' : ''}`}
         title={isPinned ? 'Unpin' : 'Pin important file'}
         onClick={() => onTogglePin(node.path)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onTogglePin(node.path);
+          }
+        }}
       >
         ★
       </span>
