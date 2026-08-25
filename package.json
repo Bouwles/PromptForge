@@ -16,7 +16,7 @@
     "dist:win": "npm run build && electron-builder --win",
     "dist:mac": "npm run build && electron-builder --mac",
     "pack:win": "npm run build && electron-packager . PromptForge --platform=win32 --arch=x64 --out=release --overwrite --no-asar --ignore=\"/release\" --ignore=\"/docs\" --ignore=\"/tests\" --ignore=\"/scripts\"",
-    "test": "node --test \"tests/*.test.js\"",
+    "test": "node scripts/run-tests.js",
     "media:gif": "node scripts/generate-demo-gif.js"
   },
   "dependencies": {
