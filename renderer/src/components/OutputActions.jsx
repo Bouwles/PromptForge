@@ -6,11 +6,11 @@ export default function OutputActions({ disabled, onAction, onRegenerate, onSave
     <div>
       <div className="section-title">Refine</div>
       <div className="btn-group">
-        <button className="btn sm" disabled={disabled} onClick={onRegenerate}>
+        <button className="btn sm" disabled={disabled} onClick={onRegenerate} title="Generate again">
           ↻ Regenerate
         </button>
         {OUTPUT_ACTIONS.map((a) => (
-          <button key={a.key} className="btn sm" disabled={disabled} onClick={() => onAction(a.key)}>
+          <button key={a.key} className="btn sm" disabled={disabled} onClick={() => onAction(a.key)} title={a.label}>
             {a.label}
           </button>
         ))}
