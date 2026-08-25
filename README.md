@@ -9,6 +9,15 @@ other coding AIs. Not a general chatbot — it only writes coding prompts.
 
 Everything runs locally. No login, no cloud, no code leaves your machine.
 
+## Demo
+
+![PromptForge demo](docs/assets/promptforge-demo.gif)
+
+![PromptForge workflow](docs/assets/promptforge-workflow.svg)
+
+The demo loop shows the product path: pick a workflow, provide a rough coding request,
+generate a structured prompt, refine it, and save it for reuse.
+
 ## Status
 
 **Phases 1–3 complete and runnable.**
