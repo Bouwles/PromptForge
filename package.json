@@ -1,6 +1,6 @@
 {
   "name": "promptforge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Local Ollama-powered prompt engineering assistant for coding agents",
   "author": "Paul Nercessian",
   "license": "MIT",

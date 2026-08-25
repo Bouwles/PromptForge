@@ -48,11 +48,18 @@ npm run dev
 This starts Vite and launches the Electron app. Open **Settings**, pick your model,
 click **Test Connection**, then go to **One-Off Prompt** and generate.
 
-## Build installers
+## Download
+
+Download the latest Windows release zip from GitHub Releases.
+
+PromptForge is a local desktop app. Install it, start Ollama, pull a model, then open
+Settings and test the connection.
+
+## Build installers locally
 
 ```bash
-npm run dist:win   # Windows NSIS .exe (run on Windows)
-npm run dist:mac   # macOS .dmg (run on macOS)
+npm run dist:win   # Windows NSIS .exe
+npm run dist:mac   # macOS .dmg
 ```
 
 Output lands in `release/`. Because SQLite is a WASM module (not a native binary),
@@ -82,43 +89,13 @@ The renderer is environment-agnostic: `renderer/src/api.js` delegates to Electro
 `renderer/src/web/` (IndexedDB storage, File System Access folder scanning, and an
 OpenRouter-via-Worker backend). The same React app powers both the desktop and web builds.
 
-## Online deployment (GitHub Pages + Cloudflare Worker)
+## Releases
 
-GitHub Pages is static-only and can't run Ollama, so the web build talks to a tiny
-**Cloudflare Worker** that proxies **OpenRouter** (the API key stays in the Worker, never
-in the browser). Prompts, projects, and history live in the browser's IndexedDB; folder
-scanning uses the File System Access API (Chromium-based browsers).
+Release builds are handled by [`.github/workflows/release.yml`](.github/workflows/release.yml).
+Push a version tag like `v0.2.0` and GitHub Actions builds the portable Windows zip,
+uploads the release file, and publishes a GitHub Release.
 
-**1. Deploy the backend** (see [`worker/README.md`](worker/README.md)):
-
-```bash
-cd worker
-npm install
-npx wrangler login
-npx wrangler secret put OPENROUTER_API_KEY
-npm run deploy            # prints https://promptforge.<you>.workers.dev
-```
-
-Lock it to your site afterward by setting `ALLOWED_ORIGINS` in `worker/wrangler.toml`.
-The endpoint is public â€” anyone who finds it can spend your OpenRouter credit, so add
-Cloudflare rate limiting and keep `ALLOWED_ORIGINS` tight.
-
-**2. Deploy the frontend.** In the repo: **Settings â†’ Pages â†’ Build and deployment â†’
-Source: GitHub Actions**. Pushing to `main` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml),
-which builds the web bundle and publishes it to `https://<user>.github.io/PromptForge/`.
-
-Set the repo variable `VITE_BACKEND_URL` (Settings â†’ Secrets and variables â†’ Actions â†’
-Variables) to your Worker URL to bake it in, or just paste it in the app under
-**Settings â†’ Backend URL**.
-
-Build it locally with:
-
-```bash
-npm run build:web        # outputs static site to dist/renderer
-```
-
-> Note: the web build's base path is `/PromptForge/` (the repo name). If you rename the
-> repo or use a user/org Pages site, set `VITE_BASE` accordingly.
+See [RELEASE.md](RELEASE.md) for the exact release checklist.
 
 ## License
 
