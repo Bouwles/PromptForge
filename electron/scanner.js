@@ -14,8 +14,11 @@ const DEFAULT_IGNORES = [
   'out',
   '.cache',
   '.turbo',
+  '.parcel-cache',
+  '.expo',
   '.svelte-kit',
   'release',
+  'target',
   '.idea',
   '.vscode',
   '__pycache__',
@@ -23,7 +26,7 @@ const DEFAULT_IGNORES = [
   '.venv',
 ];
 
-const LOCK_FILES = new Set(['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'bun.lockb']);
+const LOCK_FILES = new Set(['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'bun.lock', 'bun.lockb']);
 
 const MEDIA_EXT = new Set([
   '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.ico', '.svg',
