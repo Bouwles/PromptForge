@@ -34,6 +34,7 @@ export default function PromptEditor({ value, onChange, streaming }) {
       </div>
       <textarea
         className="editor"
+        aria-label="Generated prompt editor"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="The generated prompt will appear here. You can edit it before copying."
