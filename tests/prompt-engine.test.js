@@ -46,6 +46,12 @@ test('buildActionMessages includes directive and current prompt', () => {
   assert.match(msgs[1].content, /PROMPT BODY/);
 });
 
+test('checklist action turns a prompt into verifiable phases', () => {
+  const msgs = buildActionMessages({ currentPrompt: 'PROMPT BODY', action: 'checklist' });
+  assert.match(msgs[1].content, /implementation checklist/i);
+  assert.match(msgs[1].content, /independently verifiable/i);
+});
+
 test('buildActionMessages throws on unknown action', () => {
   assert.throws(() => buildActionMessages({ currentPrompt: 'x', action: 'nope' }), /Unknown action/);
 });
