@@ -387,6 +387,37 @@ input[type='range'] {
   text-align: center;
   padding: 40px 10px;
 }
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.preset-card {
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  padding: 12px;
+}
+.preset-card:hover,
+.preset-card:focus {
+  border-color: var(--accent-dim);
+  background: var(--panel-2);
+  outline: none;
+}
+.preset-card span,
+.preset-card small {
+  display: block;
+}
+.preset-card span {
+  font-weight: 650;
+  margin-bottom: 5px;
+}
+.preset-card small {
+  color: var(--text-dim);
+}
 .spin {
   display: inline-block;
   width: 12px;
