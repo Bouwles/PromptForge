@@ -1,5 +1,7 @@
 # PromptForge
 
+![PromptForge showcase](docs/assets/promptforge-showcase.svg)
+
 A local, **Ollama-powered prompt engineer for coding agents**. PromptForge turns
 messy coding ideas, bug reports, and feature requests into clean, structured,
 copy-paste-ready prompts for Claude Code, Cursor, Windsurf, Replit Agent, and
