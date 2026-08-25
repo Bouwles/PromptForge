@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useStore } from '../store.js';
 import * as api from '../api.js';
+import { SHOWCASE_PRESETS } from '../lib/showcase-presets.mjs';
 
 export default function Home() {
   const setView = useStore((s) => s.setView);
   const connection = useStore((s) => s.connection);
   const projects = useStore((s) => s.projects);
   const openProject = useStore((s) => s.openProject);
+  const setOneOff = useStore((s) => s.setOneOff);
   const [recentPrompts, setRecentPrompts] = useState([]);
 
   useEffect(() => {
@@ -17,6 +19,18 @@ export default function Home() {
   }, []);
 
   const recentProjects = projects.slice(0, 4);
+
+  function usePreset(preset) {
+    setOneOff({
+      input: preset.input,
+      promptType: preset.promptType,
+      targetAgent: preset.targetAgent,
+      output: '',
+      error: '',
+      saved: false,
+    });
+    setView('oneoff');
+  }
 
   return (
     <div style={{ maxWidth: 820 }}>
@@ -36,6 +50,16 @@ export default function Home() {
         <button className="btn" onClick={() => setView('settings')}>
           ⚙ Settings
         </button>
+      </div>
+
+      <div className="section-title">Starter prompts</div>
+      <div className="preset-grid" style={{ marginBottom: 24 }}>
+        {SHOWCASE_PRESETS.map((preset) => (
+          <button className="preset-card" key={preset.title} onClick={() => usePreset(preset)}>
+            <span>{preset.title}</span>
+            <small>{preset.promptType} - {preset.targetAgent}</small>
+          </button>
+        ))}
       </div>
 
       <div className="banner" style={{ marginBottom: 24 }}>
