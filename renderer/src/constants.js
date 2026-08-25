@@ -29,6 +29,7 @@ export const OUTPUT_ACTIONS = [
   { key: 'do_not_break', label: 'Add "Do Not Break"' },
   { key: 'ui_details', label: 'Add UI Details' },
   { key: 'split', label: 'Split Into Prompts' },
+  { key: 'checklist', label: 'Make Checklist' },
   { key: 'to_claude_code', label: 'Turn Into Claude Code Prompt' },
   { key: 'to_cursor', label: 'Turn Into Cursor Prompt' },
 ];
