@@ -1,3 +1,11 @@
+<div align="center">
+
+[![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)](#)
+[![License](https://img.shields.io/github/license/Bouwles/PromptForge?style=for-the-badge&color=16a34a)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/Bouwles/PromptForge?style=for-the-badge&color=16a34a)](https://github.com/Bouwles/PromptForge/commits)
+
+</div>
+
 ﻿# PromptForge
 
 ![PromptForge showcase](docs/assets/promptforge-showcase.svg)
